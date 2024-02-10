@@ -113,6 +113,7 @@ impl BlockchainTestCase {
             .map_err(|err| RunnerError::Other(vec![err.to_string()].into()))?;
         let sender_address = wallet.address().to_fixed_bytes();
 
+        println!("retdata: {:?}", retdata);
         let eth_validation_failed = retdata
             .map(|retdata| retdata == "Kakarot: eth validation failed")
             .unwrap_or_default();

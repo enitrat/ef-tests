@@ -91,11 +91,17 @@ pub(crate) fn extract_execution_retdata(
         let call_exec = &call.execution;
         let retdata = &call_exec.retdata;
 
+        // In Cairo0, the account contract returns an array of felts - we skip the length of the
+        // returned array
+        // In Cairo1, the EOA returns an Array of a Span of felt - we skip the length of the array
+        // and the length of the span
+        let skipped_elements = if cfg!(feature = "v1") { 2 } else { 1 };
+
         // Skip the first byte which is the length of the return data
         let retdata_bytes: Vec<u8> = retdata
             .0
             .iter()
-            .skip(1)
+            .skip(skipped_elements)
             .filter_map(|felt| felt.bytes().last().cloned())
             .collect();
 
